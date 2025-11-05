@@ -1,0 +1,180 @@
+<html><head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta aframe-injected="" name="mobile-web-app-capable" content="yes"><meta aframe-injected="" name="theme-color" content="black">
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v7.0.0/dist/aframe-extras.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+  <style>
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  inset: 0;
+  position: fixed;
+
+  overscroll-behavior: none;
+  box-sizing: border-box;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Garante que o canvas fique no fundo e não cause scroll */
+.a-canvas {
+  position: fixed !important;
+  top: 0; left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: -1;
+}
+
+/* Oculta botões e modais injetados que não são usados */
+.a-enter-vr-button,
+.a-orientation-modal,
+.a-loader-title,
+.a-inspector-loader {
+  display: none !important;
+}
+
+.intro-screen {
+  position: relative;
+  height: 100vh;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  overflow: hidden;
+
+  background: 
+    linear-gradient(180deg, #102216, transparent),
+    #162315;
+  border: 1px solid #202735;
+}
+
+/* Conteúdo com vidro e o mesmo visual tech */
+.intro-content {
+  position: relative;
+  background:
+    linear-gradient(180deg, #0d1b13, transparent),
+    #15231f;
+  border: 1px solid #202735;
+  backdrop-filter: blur(12px) saturate(130%);
+  -webkit-backdrop-filter: blur(12px) saturate(130%);
+  border-radius: 20px;
+  padding: 40px 50px;
+  margin: 20px;
+  text-align: center;
+  color: #fff;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(0, 255, 128, 0.08) inset;
+}
+
+
+@keyframes glow {
+  0%   { opacity: 0.3; }
+  50%  { opacity: 0.8; }
+  100% { opacity: 0.3; }
+}
+
+.logo {
+  width: 100%;
+  max-width: 220px;
+  filter: drop-shadow(0 0 10px #00ffcc);
+}
+
+h1 {
+  font-size: clamp(2rem, 6vw, 3rem);
+  margin: 10px 0;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+h1 span {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 300;
+  color: #00ffcc;
+  margin-top: 5px;
+}
+
+p {
+  font-size: clamp(1rem, 4vw, 1.4rem);
+  margin: 15px 0;
+  line-height: 1.4;
+}
+
+button {
+  padding: 14px 28px;
+  font-size: clamp(1rem, 4vw, 1.2rem);
+  background: linear-gradient(135deg, #007226, #00ff44);
+  color: rgb(252, 252, 252);
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  margin-bottom: 40px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 0 10px rgba(0,255,255,0.3);
+}
+
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(0,255,255,0.5);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 600px) {
+  .intro-content {
+    padding: 20px;
+  }
+
+  button {
+    padding: 12px 24px;
+  }
+}
+
+  </style>
+  </head>
+
+<body>
+  <div id="intro-screen" class="intro-screen">
+    <div class="intro-content">
+      <img src="./files/ZAON_enegizandomarcas_White4k.png" alt="Logo ZAON" class="logo" />
+      <h1>ZAON 
+         marcas</h1>
+      <p>Prepare-se para uma experiência em realidade aumentada 🔥</p>
+      <button onclick="startAR()">Clique para começar</button>
+    </div>
+  </div>
+  <a-scene
+  mindar-image="imageTargetSrc: ./files/targets.mind; showStats: false;"
+  color-space="sRGB"
+  renderer="colorManagement: true, physicallyCorrectLights"
+  vr-mode-ui="enabled: false"
+  device-orientation-permission-ui="enabled: false"
+  embedded
+>
+  <a-assets>
+    <img id="targetImg" src="./files/ZAON_enegizandomarcas_White4k.png" />
+    <a-asset-item id="modelGLB" src="./files/LEVEDURA_100_ANIIMADA_6 (2).glb"></a-asset-item>
+  </a-assets>
+
+  <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+  <a-entity mindar-image-target="targetIndex: 0">
+    <a-entity position="0 0 0.15" rotation="0 90 0" scale="0.12 0.12 0.12">
+      <a-gltf-model src="#modelGLB" animation-mixer></a-gltf-model>
+    </a-entity>
+  </a-entity>
+ </a-scene>
+<script>
+  function startAR() {
+    document.getElementById('intro-screen').style.display = 'none';
+  }
+</script>
+</body></html>
