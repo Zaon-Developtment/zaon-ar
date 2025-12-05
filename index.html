@@ -37,22 +37,22 @@
       display: none !important;
     }
 
-    /* Estilo para a Marca D'Água (NOVO) */
+    /* Estilo para a Marca D'água */
     #watermark {
-      position: fixed; /* Fixa o elemento na tela */
-      top: 15px;      /* Distância do topo */
-      left: 50%;      /* Começa no meio */
-      transform: translateX(-50%); /* Centraliza perfeitamente */
-      z-index: 1000;  /* Garante que fique acima da cena AR */
-      pointer-events: none; /* Ignora cliques para não interferir na AR */
-      opacity: 0.5;   /* Opacidade de 50% solicitada */
-      display: none;  /* Oculto inicialmente, será mostrado ao iniciar a AR */
-      transition: opacity 0.5s ease; /* Transição suave opcional */
+      position: fixed; 
+      top: 15px;      
+      left: 50%;      
+      transform: translateX(-50%); 
+      z-index: 1000;  
+      pointer-events: none; 
+      opacity: 0.5;   
+      display: none;  
+      transition: opacity 0.5s ease; 
     }
 
     #watermark img {
       width: 100%;
-      max-width: 180px; /* Tamanho da logo (Ajuste conforme necessário) */
+      max-width: 180px; 
       height: auto;
       filter: drop-shadow(0 0 4px rgba(0,255,128,0.1));
     }
@@ -92,31 +92,10 @@
         0 0 0 1px rgba(0, 255, 128, 0.08) inset;
     }
 
-    @keyframes glow {
-      0%   { opacity: 0.3; }
-      50%  { opacity: 0.8; }
-      100% { opacity: 0.3; }
-    }
-
     .logo {
       width: 100%;
       max-width: 220px;
       filter: drop-shadow(0 0 10px #00ffcc);
-    }
-
-    h1 {
-      font-size: clamp(2rem, 6vw, 3rem);
-      margin: 10px 0;
-      font-weight: bold;
-      letter-spacing: 1px;
-    }
-
-    h1 span {
-      display: block;
-      font-size: 1.2rem;
-      font-weight: 300;
-      color: #00ffcc;
-      margin-top: 5px;
     }
 
     p {
@@ -137,26 +116,6 @@
       transition: transform 0.2s ease, box-shadow 0.2s ease;
       box-shadow: 0 0 10px rgba(0,255,255,0.3);
     }
-
-    button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 20px rgba(0,255,255,0.5);
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @media (max-width: 600px) {
-      .intro-content {
-        padding: 20px;
-      }
-
-      button {
-        padding: 12px 24px;
-      }
-    }
   </style>
 </head>
 
@@ -174,9 +133,9 @@
   </div>
 
   <a-scene
-    mindar-image="imageTargetSrc: ./files/targets.mind; showStats: false;"
+    mindar-image="imageTargetSrc: ./files/targets.mind; showStats: false; filterMinCF: 0.0001; filterBeta: 0.1;"
     color-space="sRGB"
-    renderer="colorManagement: true, physicallyCorrectLights"
+    renderer="colorManagement: true, physicallyCorrectLights; powerPreference: high-performance;"
     vr-mode-ui="enabled: false"
     device-orientation-permission-ui="enabled: false"
     embedded

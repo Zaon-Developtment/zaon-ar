@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ZAON | Admin AR Config</title>
+  
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v7.0.0/dist/aframe-extras.min.js"></script>
+  
+  <script src="./config.js"></script> 
+  
+  <style>
+    /* -------------------------------------- */
+    /* Estilos Visuais ZAON (Tech/Verde)      */
+    /* -------------------------------------- */
+    
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+      background-color: #0b140e; /* Fundo escuro */
+      color: #e0e0e0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .header {
+      width: 100%;
+      background: #141f17;
+      padding: 15px 0;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      margin-bottom: 20px;
+    }
+
+    .header img {
+      width: 150px;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1000px;
+      padding: 20px;
+      display: flex;
+      gap: 30px;
+    }
+
+    /* Estilo do Painel de Pré-visualização */
+    .preview-panel {
+      flex: 1;
+      min-height: 500px;
+      background: #0d1b13;
+      border: 1px solid #00ff44;
+      box-shadow: 0 0 10px rgba(0, 255, 68, 0.2);
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .preview-panel h3 {
+      text-align: center;
+      color: #00ff44;
+      margin-top: 10px;
+      text-shadow: 0 0 5px rgba(0, 255, 68, 0.5);
+    }
+
+    /* Estilo do Painel de Controles */
+    .controls-panel {
+      flex: 1;
+      padding: 20px;
+      background: #101a11;
+      border: 1px solid #283a2c;
+      border-radius: 8px;
+    }
+
+    .control-group {
+      margin-bottom: 20px;
+      padding: 15px;
+      border: 1px solid #00ff44;
+      border-radius: 6px;
+      background: #142116;
+    }
+
+    .control-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: #00ff44;
+      font-weight: bold;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 5px;
+    }
+
+    .input-row input[type="range"] {
+      flex-grow: 1;
+      -webkit-appearance: none;
+      height: 6px;
+      background: #333;
+      border-radius: 5px;
+      outline: none;
+    }
+    
+    /* Thumb do slider (verde tech) */
+    .input-row input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: #00ff44;
+      cursor: pointer;
+      box-shadow: 0 0 5px #00ff44;
+    }
+
+    .input-row input[type="number"] {
+      width: 60px;
+      background: #222;
+      border: 1px solid #00ff44;
+      color: #fff;
+      padding: 5px;
+      border-radius: 4px;
+    }
+
+    /* Estilo dos Botões de Seleção GLB */
+    .glb-selector {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 15px;
+    }
+
+    .glb-selector button {
+      padding: 10px 20px;
+      background-color: #333;
+      color: #fff;
+      border: 2px solid #555;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .glb-selector button:hover {
+      background-color: #444;
+    }
+
+    .glb-selector button.active {
+      background-color: #00ff44;
+      color: #101a11;
+      font-weight: bold;
+      border-color: #00ff44;
+      box-shadow: 0 0 10px rgba(0, 255, 68, 0.5);
+    }
+    
+    /* Botão Salvar */
+    #save-button {
+      width: 100%;
+      padding: 15px;
+      margin-top: 30px;
+      font-size: 1.2rem;
+      background: linear-gradient(135deg, #007226, #00ff44);
+      color: #101a11;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(0, 255, 68, 0.5);
+      transition: background 0.3s, transform 0.1s;
+    }
+
+    #save-button:active {
+      transform: scale(0.98);
+    }
+    
+    /* Alerta de Salvamento */
+    #save-alert {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      background-color: #00ff44;
+      color: #101a11;
+      border-radius: 5px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+    }
+
+    /* Estilo para a cena de pré-visualização */
+    #preview-scene {
+      width: 100%;
+      height: 440px;
+    }
+    
+    /* Responsividade */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .preview-panel {
+        min-height: 350px;
+      }
+      #preview-scene {
+          height: 300px;
+      }
+    }
+
+  </style>
+</head>
+
+<body onload="initializeAdmin()">
+  
+  <div class="header">
+    <img src="./files/ZAON_enegizandomarcas_WhiteFullHD.png" alt="Logo ZAON Admin">
+  </div>
+  
+  <div class="container">
+    
+    <div class="preview-panel">
+      <h3>Pré-visualização 3D</h3>
+      <a-scene id="preview-scene" embedded>
+        <a-assets>
+          <a-asset-item id="preview-levedura" src="./files/LEVEDURA_100_ANIIMADA_6 (2).glb"></a-asset-item>
+          <a-asset-item id="preview-civic" src="./files/1993_honda_civic_ej1_vis_racing_bomber.glb"></a-asset-item>
+        </a-assets>
+        
+        <a-camera position="0 2 5" look-controls="enabled: false" fov="60"></a-camera>
+        <a-light type="directional" intensity="0.8" position="-1 1 2"></a-light>
+        <a-light type="ambient" intensity="0.5"></a-light>
+        
+        <a-entity id="preview-model-container">
+          </a-entity>
+      </a-scene>
+    </div>
+    
+    <div class="controls-panel">
+      <h2>Controle de Atributos AR</h2>
+
+      <div class="control-group">
+        <label>Modelo 3D Ativo:</label>
+        <div class="glb-selector" id="glb-selector">
+          <button id="btn-levedura" data-model="levedura" onclick="setModel('levedura')">Levedura</button>
+          <button id="btn-civic" data-model="civic" onclick="setModel('civic')">Civic</button>
+        </div>
+      </div>
+      
+      <div class="control-group">
+        <label>Escala Global (Scale): <span id="scale-val">0.12</span></label>
+        <div class="input-row">
+          <input type="range" id="scale-range" min="0.01" max="5" step="0.01" value="0.12" oninput="updateControls()">
+          <input type="number" id="scale-num" min="0.01" max="5" step="0.01" value="0.12" onchange="updateControls()">
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>Rotação (Rotation):</label>
+        <div class="input-row">
+          X: <input type="range" id="rotX-range" min="-180" max="180" value="0" oninput="updateControls()">
+          <input type="number" id="rotX-num" min="-180" max="180" value="0" onchange="updateControls()">
+        </div>
+        <div class="input-row">
+          Y: <input type="range" id="rotY-range" min="-180" max="180" value="90" oninput="updateControls()">
+          <input type="number" id="rotY-num" min="-180" max="180" value="90" onchange="updateControls()">
+        </div>
+        <div class="input-row">
+          Z: <input type="range" id="rotZ-range" min="-180" max="180" value="0" oninput="updateControls()">
+          <input type="number" id="rotZ-num" min="-180" max="180" value="0" onchange="updateControls()">
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>Posição (Position):</label>
+        <p style="font-size:0.8em; margin: 0 0 10px; color:#aaa;">(Y é altura, Z é profundidade)</p>
+        <div class="input-row">
+          X: <input type="range" id="posX-range" min="-2" max="2" step="0.01" value="0" oninput="updateControls()">
+          <input type="number" id="posX-num" min="-2" max="2" step="0.01" value="0" onchange="updateControls()">
+        </div>
+        <div class="input-row">
+          Y: <input type="range" id="posY-range" min="-2" max="2" step="0.01" value="0" oninput="updateControls()">
+          <input type="number" id="posY-num" min="-2" max="2" step="0.01" value="0" onchange="updateControls()">
+        </div>
+        <div class="input-row">
+          Z: <input type="range" id="posZ-range" min="-2" max="2" step="0.01" value="0.15" oninput="updateControls()">
+          <input type="number" id="posZ-num" min="-2" max="2" step="0.01" value="0.15" onchange="updateControls()">
+        </div>
+      </div>
+
+      <button id="save-button" onclick="saveConfigAndShowAlert()">SALVAR CONFIGURAÇÕES</button>
+
+    </div>
+  </div>
+  
+  <div id="save-alert">Configurações Salvas!</div>
+
+  <script>
+  let currentModel = 'levedura';
+  const modelAssets = {
+    levedura: '#preview-levedura',
+    civic: '#preview-civic'
+  };
+
+  // 1. Inicializa o painel Admin
+  function initializeAdmin() {
+    // Tenta carregar as configs salvas (função de config.js)
+    if (typeof loadARConfig === 'function') {
+        const config = loadARConfig();
+        currentModel = config.modelId;
+        
+        // Aplica os valores nos inputs
+        document.getElementById('scale-range').value = config.scale;
+        document.getElementById('scale-num').value = config.scale;
+        document.getElementById('rotX-num').value = document.getElementById('rotX-range').value = config.rotation.split(' ')[0];
+        document.getElementById('rotY-num').value = document.getElementById('rotY-range').value = config.rotation.split(' ')[1];
+        document.getElementById('rotZ-num').value = document.getElementById('rotZ-range').value = config.rotation.split(' ')[2];
+        document.getElementById('posX-num').value = document.getElementById('posX-range').value = config.position.split(' ')[0];
+        document.getElementById('posY-num').value = document.getElementById('posY-range').value = config.position.split(' ')[1];
+        document.getElementById('posZ-num').value = document.getElementById('posZ-range').value = config.position.split(' ')[2];
+        
+        // Seleciona o botão correto
+        document.querySelectorAll('#glb-selector button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.getElementById('btn-' + currentModel).classList.add('active');
+        
+        updateControls(false); // Aplica os valores carregados na pré-visualização
+    } else {
+         // Se config.js ainda não foi carregado, aplica os defaults na pré-visualização
+         updateControls(false); 
+    }
+  }
+  
+  // 2. Altera o modelo ativo e atualiza a pré-visualização
+  function setModel(modelId) {
+    currentModel = modelId;
+    document.querySelectorAll('#glb-selector button').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    document.getElementById('btn-' + modelId).classList.add('active');
+    updateControls(false);
+  }
+
+  // 3. Atualiza a pré-visualização 3D e sincroniza inputs
+  function updateControls(sync = true) {
+    const container = document.getElementById('preview-model-container');
+
+    // Sincroniza inputs (range -> number e vice-versa)
+    if (sync) {
+        // Escala
+        document.getElementById('scale-num').value = document.getElementById('scale-range').value = parseFloat(event.target.value).toFixed(2);
+        document.getElementById('scale-val').textContent = parseFloat(event.target.value).toFixed(2);
+        
+        // Rotação
+        if (event.target.id.includes('rot')) {
+             const axis = event.target.id.slice(0, 4); // rotX, rotY, rotZ
+             document.getElementById(axis + 'num').value = document.getElementById(axis + 'range').value;
+        }
+
+        // Posição
+        if (event.target.id.includes('pos')) {
+             const axis = event.target.id.slice(0, 4); // posX, posY, posZ
+             document.getElementById(axis + 'num').value = document.getElementById(axis + 'range').value;
+        }
+    }
+    
+    // Obtém os valores finais
+    const scale = parseFloat(document.getElementById('scale-num').value);
+    const rotX = parseFloat(document.getElementById('rotX-num').value);
+    const rotY = parseFloat(document.getElementById('rotY-num').value);
+    const rotZ = parseFloat(document.getElementById('rotZ-num').value);
+    const posX = parseFloat(document.getElementById('posX-num').value);
+    const posY = parseFloat(document.getElementById('posY-num').value);
+    const posZ = parseFloat(document.getElementById('posZ-num').value);
+
+    // Aplica as propriedades no contêiner de pré-visualização
+    container.setAttribute('scale', `${scale} ${scale} ${scale}`);
+    container.setAttribute('rotation', `${rotX} ${rotY} ${rotZ}`);
+    container.setAttribute('position', `${posX} ${posY} ${posZ}`);
+
+    // Garante que o modelo GLTF correto esteja sendo exibido
+    // Remove o modelo antigo
+    while (container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
+
+    // Adiciona o novo modelo
+    const gltfModel = document.createElement('a-gltf-model');
+    gltfModel.setAttribute('src', modelAssets[currentModel]);
+    // Adiciona animação apenas se o modelo for a levedura (exemplo)
+    if (currentModel === 'levedura') {
+        gltfModel.setAttribute('animation-mixer', ''); 
+    }
+    
+    // Adiciona uma rotação automática para o modelo rodar na pré-visualização
+    gltfModel.setAttribute('animation', {
+        property: 'rotation',
+        to: '0 360 0',
+        loop: true,
+        dur: 8000
+    });
+    
+    container.appendChild(gltfModel);
+  }
+  
+  // 4. Salva a configuração e mostra alerta (chama saveARConfig de config.js)
+  function saveConfigAndShowAlert() {
+    const scale = parseFloat(document.getElementById('scale-num').value).toFixed(2);
+    const rotX = parseFloat(document.getElementById('rotX-num').value);
+    const rotY = parseFloat(document.getElementById('rotY-num').value);
+    const rotZ = parseFloat(document.getElementById('rotZ-num').value);
+    const posX = parseFloat(document.getElementById('posX-num').value).toFixed(2);
+    const posY = parseFloat(document.getElementById('posY-num').value).toFixed(2);
+    const posZ = parseFloat(document.getElementById('posZ-num').value).toFixed(2);
+
+    const configData = {
+        modelId: currentModel,
+        scale: `${scale} ${scale} ${scale}`,
+        rotation: `${rotX} ${rotY} ${rotZ}`,
+        position: `${posX} ${posY} ${posZ}`
+    };
+
+    if (typeof saveARConfig === 'function') {
+        saveARConfig(configData);
+    } else {
+        alert("Erro: O arquivo config.js não foi carregado. As configurações não foram salvas.");
+        return;
+    }
+
+    // Mostra alerta de salvamento
+    const alertBox = document.getElementById('save-alert');
+    alertBox.style.opacity = '1';
+    setTimeout(() => {
+        alertBox.style.opacity = '0';
+    }, 2000);
+  }
+
+</script>
+</body>
+</html>
