@@ -133,26 +133,48 @@
   </div>
 
   <a-scene
-    mindar-image="imageTargetSrc: ./files/targets.mind; showStats: false; filterMinCF: 0.0001; filterBeta: 0.1;"
-    color-space="sRGB"
-    renderer="colorManagement: true, physicallyCorrectLights; powerPreference: high-performance;"
-    vr-mode-ui="enabled: false"
-    device-orientation-permission-ui="enabled: false"
-    embedded
-  >
-    <a-assets>
-      <img id="targetImg" src="./files/ZAON_enegizandomarcas_White4k.png" />
-      <a-asset-item id="modelGLB" src="./files/LEVEDURA_100_ANIIMADA_6 (2).glb"></a-asset-item>
-    </a-assets>
+  mindar-image="imageTargetSrc: ./files/targets-2.mind; showStats: false; filterMinCF: 0.0001; filterBeta: 0.1;"
+  color-space="sRGB"
+  renderer="colorManagement: true, physicallyCorrectLights; powerPreference: high-performance; shadowMapEnabled: true;"
+  vr-mode-ui="enabled: false"
+  device-orientation-permission-ui="enabled: false"
+  embedded
+>
+  <a-assets>
+    <img id="targetImg" src="./files/ZAON_enegizandomarcas_White4k.png" />
+    <a-asset-item id="modelGLB" src="./files/1993_honda_civic_ej1_vis_racing_bomber.glb"></a-asset-item>
+  </a-assets>
 
-    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+  <a-light 
+      type="directional" 
+      intensity="0.6" 
+      position="1 2 2"
+      shadow-map-height="1024" 
+      shadow-map-width="1024"
+      castShadow="true"
+  ></a-light>
+  <a-light type="ambient" intensity="0.5"></a-light>
 
-    <a-entity mindar-image-target="targetIndex: 0">
-      <a-entity position="0 0 0.15" rotation="0 90 0" scale="0.12 0.12 0.12">
-        <a-gltf-model src="#modelGLB" animation-mixer></a-gltf-model>
-      </a-entity>
+  <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+  <a-entity mindar-image-target="targetIndex: 0">
+    
+    <a-plane 
+        rotation="-90 0 0" 
+        width="1" height="1" 
+        material="shader: shadow; opacity: 0.5;" 
+        receiveShadow="true"
+    ></a-plane>
+    
+    <a-entity position="0 0 -0.15" rotation="90 0 0" scale="0.05 0.05 0.05">
+      <a-gltf-model 
+          src="#modelGLB" 
+          animation-mixer 
+          castShadow="true"
+      ></a-gltf-model>
     </a-entity>
-  </a-scene>
+  </a-entity>
+</a-scene>
   
 <script>
   function startAR() {
